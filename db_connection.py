@@ -50,6 +50,10 @@ class MySqlConnection:
     def get_all_trackers(self, tracker_type):
         if not isinstance(tracker_type, TrackerType):
             raise TypeError('tracker_type must be an instance of TrackerType Enum')
-        sql = "SELECT * FROM truck_tracker INNER JOIN user_truck_details ON user_truck_details.id=truck_tracker.truck_id WHERE truck_tracker.is_deleted=false AND truck_tracker.tracker_type='" + tracker_type.name + "'"
+        sql = "SELECT * FROM truck_tracker " \
+              "INNER JOIN user_truck_details ON user_truck_details.id=truck_tracker.truck_id " \
+              "LEFT JOIN master_truck_sizes ON master_truck_sizes.id=user_truck_details.truck_size " \
+              "LEFT JOIN master_truck_types ON master_truck_types.id=user_truck_details.truck_type " \
+              "WHERE truck_tracker.is_deleted=false AND truck_tracker.tracker_type='" + tracker_type.name + "'"
         self.__cursorDict.execute(sql)
         return self.__cursorDict.fetchall()
